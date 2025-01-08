@@ -1,6 +1,7 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import {ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JobService } from './job.service';
+import { JobQueryDto } from './dto/job-query.dto';
 
 @Controller('job')
 @ApiTags("Jobs")
@@ -10,9 +11,9 @@ export class JobController {
    @HttpCode(HttpStatus.OK)
    @Get()
    @ApiResponse({description:"this endpoint fetch all available jobs", status: 200})
-   findAll(){
+   findAll(@Query() query?:JobQueryDto){
     try {
-        return this.jobService.findAll()
+        return this.jobService.findAll(query)
     } catch (error) {
         return error
     }

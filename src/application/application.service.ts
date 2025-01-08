@@ -2,6 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { paginateApplication } from 'src/common/utils/pagination.util';
+import { IQuery } from 'src/common/interfaces/query.interface';
+import { ApplicationQueryDto } from './dto/query-application.dto';
 
 @Injectable()
 export class ApplicationService {
@@ -29,8 +32,14 @@ export class ApplicationService {
     });
   }
 
-  async findAll() {
-    return await this.prisma.application.findMany({ select:{
+  async findAll(query?:ApplicationQueryDto) {
+    const {where, orderBy, skip, pageSize, currentPage} = paginateApplication(query)
+    const applications = await this.prisma.application.findMany({
+      where,
+      orderBy,
+      skip,
+      take: pageSize,
+      select:{
       user:{
         select:{
           id:true,
@@ -40,10 +49,22 @@ export class ApplicationService {
       },
       job:true,
       status:true,
-      id:true
+      id:true,
+      dateApplied:true
     }})
+      
+  // Total count for pagination
+  const totalCount = await this.prisma.application.count({ where });
+
+  return {
+    applications,
+    totalPages: Math.ceil(totalCount / pageSize),
+    currentPage,
+    totalCount,
+  };
   }
 
+  
   async findOne(id: string) {
     return await this.prisma.application.findFirst({where:{id}})
   }

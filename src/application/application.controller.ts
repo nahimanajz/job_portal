@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query } from '@nestjs/common';
 import { ApplicationService } from './application.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminRoleGuard, BaseAuthGuard } from 'src/auth/guards';
+import { ApplicationQueryDto } from './dto/query-application.dto';
 
 @Controller('application')
 @ApiTags("Applications")
@@ -26,10 +27,10 @@ export class ApplicationController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() query?:ApplicationQueryDto) {
     try {
-      
-      return this.applicationService.findAll();
+      console.log(query)
+      return this.applicationService.findAll(query);
     } catch (error) {
       return error
     }
