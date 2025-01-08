@@ -3,21 +3,12 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
-  Get,
-  Post,
-  Query,
-  Param,
-  Req,
-  UseGuards,
-  Res,
-  Patch,
+  Post
 } from '@nestjs/common';
-import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import {  ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { AuthDto, SigninDto } from './dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
 
 
 @ApiTags('Authentication')

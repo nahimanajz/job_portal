@@ -27,7 +27,7 @@ export class AuthService {
       },
     });
 
-    console.log('user===>', existingUser);
+   
 
     if (existingUser) {
       throw new ConflictException(
@@ -68,7 +68,6 @@ export class AuthService {
         password: true,
       },
     });
-    console.log("this is a user", user)
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }

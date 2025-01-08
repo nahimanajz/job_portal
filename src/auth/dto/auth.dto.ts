@@ -16,7 +16,7 @@ export class AuthDto {
   @NotContains('+')
   @ApiProperty({
     type: 'string',
-    default: 'zed@yopmail.com',
+    default: 'zedpromax@yopmail.com',
     required: true,
   })
   email: string;
