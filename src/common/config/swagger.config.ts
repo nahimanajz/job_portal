@@ -14,8 +14,7 @@ const config = new DocumentBuilder()
   .setVersion('1.0.0')
   .addTag('Home')
   .addTag('Authentication')
- // .addTag('Business')
-//  .addTag('Prize')
+
 
   .addServer(API_URL)
   .build();

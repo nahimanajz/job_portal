@@ -3,7 +3,7 @@ import {ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JobService } from './job.service';
 import { JobQueryDto } from './dto/job-query.dto';
 
-@Controller('job')
+@Controller('jobs')
 @ApiTags("Jobs")
 export class JobController {
     constructor(private readonly jobService: JobService ){}

@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class DashboardService {}
+export class DashboardService {
+    constructor(private readonly jwtService: JwtService){}
+}

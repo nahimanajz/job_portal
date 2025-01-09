@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminRoleGuard, BaseAuthGuard } from 'src/auth/guards';
 import { ApplicationQueryDto } from './dto/query-application.dto';
 
-@Controller('application')
+@Controller('applications')
 @ApiTags("Applications")
 @ApiBearerAuth()
 @UseGuards(BaseAuthGuard)
