@@ -36,6 +36,7 @@
 
 # Devnotes
 
- This application features are complete  as well as bonus features, however you might due to time I focused a lot on functionality even so, given time I would entirely focus on code quality, removing `any types` as well as on reducing I do on frontend while filtering jobs and application using text fields which are there.
+ - This application features are complete  as well as bonus features, however you might due to time I focused a lot on functionality even so, given time I would entirely focus on code quality, removing `any types` as well as on reducing I do on frontend while filtering jobs and application using text fields which are there.
+ - Lastly, few feature might not work on deployed version but once tested on local computer they work smoothly this is due to some virtual machines inconveniences that arose while deploying
 
 ## Developed by JanvierNahimana
