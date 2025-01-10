@@ -10,6 +10,7 @@ export const paginateApplication = (query: ApplicationQueryDto) => {
     status,
     dateFrom,
     dateTo,
+    location
   } = query;
 
   const skip = (Number(page) - 1) * Number(pageSize);
@@ -18,6 +19,10 @@ export const paginateApplication = (query: ApplicationQueryDto) => {
   // Add filters
   if (status) {
     where.status = status;
+  }
+  if(location){
+    where.job = where.job || {}; 
+    where.job.location = {contains: location, mode: "insensitive"}
   }
   if (dateFrom || dateTo) {
     where.dateApplied = {
@@ -55,15 +60,23 @@ export const paginateJobs = (query: JobQueryDto) => {
     location,
     dateFrom,
     dateTo,
+    title,
+    description
   } = query;
 
     const skip = (Number(page) - 1) * Number(pageSize);
     const where: any = {};
     if (category) {
-      where.category = { equals: category };
+      where.category = { contains: category, mode: "insensitive"  };
     }
     if (location) {
-      where.location = { equals: location };
+      where.location = { contains: location, mode: "insensitive"  };
+    }
+    if (description) {
+      where.description = { contains: description, mode: "insensitive"  };
+    }
+    if (title) {
+      where.description = { contains: title, mode: "insensitive"  };
     }
     if (dateFrom) {
       where.datePosted = { gte: new Date(dateFrom) };

@@ -51,10 +51,10 @@ model Application {
 model Job {
   id          String   @id @default(uuid())
   title       String
-  category    String
-  location    String
+  category    String @db.Citext
+  location    String @db.Citext
   datePosted  DateTime @default(now())
-  description String
+  description String @db.Citext
 
   applications Application[]
 

@@ -37,6 +37,16 @@ export class JobQueryDto {
   @IsString()
   location?: string;
 
+  @ApiPropertyOptional({ example: 'Carpenter ', description: 'Filter by job title' })
+  @IsOptional()
+  @IsString()
+  title?: string;
+
+  @ApiPropertyOptional({ example: 'loremdalsdklasd ', description: 'Filter by job description' })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
   @ApiPropertyOptional({ example: '2025-01-01', description: 'Filter by jobs posted after this date' })
   @IsOptional()
   @IsDateString({}, { message: 'dateFrom must be a valid ISO date string' })

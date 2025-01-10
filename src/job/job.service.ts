@@ -9,21 +9,19 @@ export class JobService {
     throw new Error('Method not implemented.');
   }
 
-    constructor(private prisma: PrismaService){}
-    
-    
-   async findAll(query?: JobQueryDto ) {
+  constructor(private prisma: PrismaService) {}
 
-        const {where, orderBy, skip, pageSize, currentPage} = paginateJobs(query) 
-        const jobs = await this.prisma.job.findMany({
-            where,
-            orderBy,
-            skip,
-            take: pageSize,
-        });
+  async findAll(query?: JobQueryDto) {
+    const { where, orderBy, skip, pageSize, currentPage } = paginateJobs(query);
+    const jobs = await this.prisma.job.findMany({
+      where,
+      orderBy,
+      skip,
+      take: pageSize,
+    });
 
-         // Total count for pagination metadata
-        const totalCount = await this.prisma.job.count({ where });
+    // Total count for pagination metadata
+    const totalCount = await this.prisma.job.count({ where });
 
     return {
       jobs,
@@ -31,5 +29,12 @@ export class JobService {
       currentPage,
       totalCount,
     };
-    }
+  }
+  async findAllCategories() {
+    return await this.prisma.job.findMany({
+      select: {
+        category: true,
+      },
+    });
+  }
 }

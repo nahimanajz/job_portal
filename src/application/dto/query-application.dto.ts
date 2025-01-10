@@ -12,6 +12,11 @@ export class ApplicationQueryDto {
 
   pageSize?: number;
 
+  @ApiPropertyOptional({ example: "City 9", description: 'Enter job location' })
+  @IsOptional()
+  @IsString()
+  location?: string;
+
   @ApiPropertyOptional({ example: 'date', description: 'Field to sort by' })
   @IsOptional()
   @IsString()
@@ -24,7 +29,7 @@ export class ApplicationQueryDto {
   @IsIn(['asc', 'desc'], { message: 'SortOrder must be asc or desc' })
   sortOrder?: string;
 
-  @ApiPropertyOptional({ example: 'approved', description: 'Filter by application status' })
+  @ApiPropertyOptional({ example: 'Accepted', description: 'Filter by application status' })
   @IsOptional()
   @IsString()
   status?: string;

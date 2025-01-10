@@ -35,7 +35,8 @@ export class ApplicationService {
 
   async findAll(user:any, query?:ApplicationQueryDto) {
     const {where:condition, orderBy, skip, pageSize, currentPage} = paginateApplication(query)
-    const where = user.role === 'Admin' ? {...condition, userId:user.id} : condition 
+    const where = user.role === 'Admin' ? condition:{...condition, userId:user.id}  
+   
     const applications = await this.prisma.application.findMany({
       where,
       orderBy,
