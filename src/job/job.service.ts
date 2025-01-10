@@ -5,6 +5,9 @@ import { paginateJobs } from 'src/common/utils/pagination.util';
 
 @Injectable()
 export class JobService {
+  getByCategoryOrLocation(query: any) {
+    throw new Error('Method not implemented.');
+  }
 
     constructor(private prisma: PrismaService){}
     

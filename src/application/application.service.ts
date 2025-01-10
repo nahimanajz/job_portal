@@ -8,6 +8,7 @@ import { ApplicationQueryDto } from './dto/query-application.dto';
 
 @Injectable()
 export class ApplicationService {
+  
   constructor(private prisma: PrismaService) {}
 
   async create(user: any, dto: CreateApplicationDto) {
@@ -32,8 +33,9 @@ export class ApplicationService {
     });
   }
 
-  async findAll(query?:ApplicationQueryDto) {
-    const {where, orderBy, skip, pageSize, currentPage} = paginateApplication(query)
+  async findAll(user:any, query?:ApplicationQueryDto) {
+    const {where:condition, orderBy, skip, pageSize, currentPage} = paginateApplication(query)
+    const where = user.role === 'Admin' ? {...condition, userId:user.id} : condition 
     const applications = await this.prisma.application.findMany({
       where,
       orderBy,
@@ -81,4 +83,33 @@ export class ApplicationService {
   async remove(id: string) {
     await this.prisma.application.delete({where:{id}})
   }
-}
+  async getApplicationsOverTime( interval: 'day' | 'month' | 'year') {
+  
+     const applications = await this.prisma.application.findMany({
+      select: {
+        dateApplied: true,
+      },
+    });
+    const groupedData = this.aggregateApplicationsByInterval(applications, interval);
+    return groupedData;
+    }
+  
+    private aggregateApplicationsByInterval(
+      applications: { dateApplied: Date }[],
+      interval: 'day' | 'month' | 'year',
+    ) {
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        day: interval === 'day' ? '2-digit' : undefined,
+        month: interval !== 'year' ? '2-digit' : undefined,
+        year: 'numeric',
+      });
+  
+      const dateMap = new Map<string, number>();
+  
+      for (const application of applications) {
+        const formattedDate = formatter.format(application.dateApplied);
+        dateMap.set(formattedDate, (dateMap.get(formattedDate) || 0) + 1);
+      }
+      return Array.from(dateMap, ([date, count]) => ({ date, count }));
+    }
+  }

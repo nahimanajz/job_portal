@@ -8,7 +8,6 @@ export class RoleGuard extends BaseAuthGuard {
     if (!canActivateBase) return false;
 
     const request = context.switchToHttp().getRequest();
-   
    const role = request?.user?.['role'] ?? null;
     return true;
   }

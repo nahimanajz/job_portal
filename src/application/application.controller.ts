@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminRoleGuard, BaseAuthGuard } from 'src/auth/guards';
 import { ApplicationQueryDto } from './dto/query-application.dto';
 
+
 @Controller('applications')
 @ApiTags("Applications")
 @ApiBearerAuth()
@@ -27,10 +28,9 @@ export class ApplicationController {
   }
 
   @Get()
-  findAll(@Query() query?:ApplicationQueryDto) {
+  findAll(@Request() req:any, @Query() query?:ApplicationQueryDto) {
     try {
-      console.log(query)
-      return this.applicationService.findAll(query);
+      return this.applicationService.findAll(req.user, query);
     } catch (error) {
       return error
     }

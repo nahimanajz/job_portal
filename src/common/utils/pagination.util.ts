@@ -13,7 +13,6 @@ export const paginateApplication = (query: ApplicationQueryDto) => {
   } = query;
 
   const skip = (Number(page) - 1) * Number(pageSize);
-
   const where: any = {};
 
   // Add filters
