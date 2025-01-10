@@ -5,23 +5,26 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { paginateApplication } from 'src/common/utils/pagination.util';
 import { IQuery } from 'src/common/interfaces/query.interface';
 import { ApplicationQueryDto } from './dto/query-application.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class ApplicationService {
-  
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailerService,
+  ) {}
 
   async create(user: any, dto: CreateApplicationDto) {
     const existingRecord = await this.prisma.application.findFirst({
       where: {
         jobId: dto.jobId,
         userId: user.id,
-      }
+      },
     });
     if (existingRecord) {
       throw new ConflictException('You have already applied to this position.');
     }
-    const job = await this.prisma.job.findFirst({where: {id: dto.jobId}})
+    const job = await this.prisma.job.findFirst({ where: { id: dto.jobId } });
 
     return await this.prisma.application.create({
       data: {
@@ -33,84 +36,108 @@ export class ApplicationService {
     });
   }
 
-  async findAll(user:any, query?:ApplicationQueryDto) {
-    const {where:condition, orderBy, skip, pageSize, currentPage} = paginateApplication(query)
-    const where = user.role === 'Admin' ? condition:{...condition, userId:user.id}  
-   
+  async findAll(user: any, query?: ApplicationQueryDto) {
+    const {
+      where: condition,
+      orderBy,
+      skip,
+      pageSize,
+      currentPage,
+    } = paginateApplication(query);
+    const where =
+      user.role === 'Admin' ? condition : { ...condition, userId: user.id };
+
     const applications = await this.prisma.application.findMany({
       where,
       orderBy,
       skip,
       take: pageSize,
-      select:{
-      user:{
-        select:{
-          id:true,
-          email:true,
-          role:true
-        }
+      select: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+          },
+        },
+        job: true,
+        status: true,
+        id: true,
+        dateApplied: true,
       },
-      job:true,
-      status:true,
-      id:true,
-      dateApplied:true
-    }})
-      
-  // Total count for pagination
-  const totalCount = await this.prisma.application.count({ where });
+    });
 
-  return {
-    applications,
-    totalPages: Math.ceil(totalCount / pageSize),
-    currentPage,
-    totalCount,
-  };
+    // Total count for pagination
+    const totalCount = await this.prisma.application.count({ where });
+
+    return {
+      applications,
+      totalPages: Math.ceil(totalCount / pageSize),
+      currentPage,
+      totalCount,
+    };
   }
 
-  
   async findOne(id: string) {
-    return await this.prisma.application.findFirst({where:{id}})
+    return await this.prisma.application.findFirst({ where: { id } });
   }
 
   async update(id: string, data: UpdateApplicationDto) {
-    return await this.prisma.application.update({
+    const application = await this.prisma.application.update({
       data,
-      where:{
-        id
-      }
-    })
+      where: {
+        id,
+      },
+      select: { user: true },
+    });
+    if (application) {
+      await this.sendMail(application.user.email, data.status);
+    }
+    return application;
   }
 
   async remove(id: string) {
-    await this.prisma.application.delete({where:{id}})
+    await this.prisma.application.delete({ where: { id } });
   }
-  async getApplicationsOverTime( interval: 'day' | 'month' | 'year') {
-  
-     const applications = await this.prisma.application.findMany({
+  async getApplicationsOverTime(interval: 'day' | 'month' | 'year') {
+    const applications = await this.prisma.application.findMany({
       select: {
         dateApplied: true,
       },
     });
-    const groupedData = this.aggregateApplicationsByInterval(applications, interval);
+    const groupedData = this.aggregateApplicationsByInterval(
+      applications,
+      interval,
+    );
     return groupedData;
-    }
-  
-    private aggregateApplicationsByInterval(
-      applications: { dateApplied: Date }[],
-      interval: 'day' | 'month' | 'year',
-    ) {
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        day: interval === 'day' ? '2-digit' : undefined,
-        month: interval !== 'year' ? '2-digit' : undefined,
-        year: 'numeric',
-      });
-  
-      const dateMap = new Map<string, number>();
-  
-      for (const application of applications) {
-        const formattedDate = formatter.format(application.dateApplied);
-        dateMap.set(formattedDate, (dateMap.get(formattedDate) || 0) + 1);
-      }
-      return Array.from(dateMap, ([date, count]) => ({ date, count }));
-    }
   }
+
+  private aggregateApplicationsByInterval(
+    applications: { dateApplied: Date }[],
+    interval: 'day' | 'month' | 'year',
+  ) {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      day: interval === 'day' ? '2-digit' : undefined,
+      month: interval !== 'year' ? '2-digit' : undefined,
+      year: 'numeric',
+    });
+
+    const dateMap = new Map<string, number>();
+
+    for (const application of applications) {
+      const formattedDate = formatter.format(application.dateApplied);
+      dateMap.set(formattedDate, (dateMap.get(formattedDate) || 0) + 1);
+    }
+    return Array.from(dateMap, ([date, count]) => ({ date, count }));
+  }
+  private async sendMail(receiver: string, status: string) {
+    const message = `Hello ${receiver} your job appliation has moved to ${status}`;
+
+    await this.mailService.sendMail({
+      from: `Harambe jobboard ${process.env.EMAIL_USERNAME}`,
+      to: `${receiver}`,
+      subject: `Job application update`,
+      text: message,
+    });
+  }
+}
