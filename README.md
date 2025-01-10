@@ -1,67 +1,41 @@
-Full-Stack Developer Challenge:  Job Portal with Dashboard
+# Jobboard
+ This fullstack web application for listing and applying for job,
+ you can frontend repository (here)[https://github.com/nahimanajz/jobportal-fe]
+## features
+- Signin
+- Signup as either admin or applicant
+- List jobs and applications along with filters and sorting 
+- Apply for a job
+- Change status to accepted, or reviewed 
+- Deleting a candidate application 
 
-Task Overview:  
+## installation Guide
+ clone this repository then follow the guidance below
+ ```
+ cd job_portal/
+ cp .env.example .env // fill environment variables shared
+ npm install or pnpm install 
+ pnpm start:dev
+ pnpm prisma:generate
+ pnpm prisma:db:seed
+ 
+ ```
+## Tools
+1. backend
 
-Build a small job portal with the following core features:
+- postgres and prisma ORM
+- NestJs
+- Typescript
+- Node mailer 
 
-Authentication
-Job Listings (with filtering, pagination, and sorting)
-Dashboard (with graphs to visualize job-related statistics )
+2. frontend
 
-You have 1 week to complete this challenge. The goal is to assess your ability to develop both frontend and backend features, integrate graphs, handle data efficiently, and ensure the application is scalable and maintainable
+- NextJs on frontend
+- nextauth
+- ReactQuery
 
-Challenge Requirements:
+# Devnotes
 
-1. User Authentication:
-Implement a login feature where users can log in using their credentials.
-Jobs should be visible to anyone (public), but users must have an account to apply for jobs.
+ This application features are complete  as well as bonus features, however you might due to time I focused a lot on functionality even so, given time I would entirely focus on code quality, removing `any types` as well as on reducing I do on frontend while filtering jobs and application using text fields which are there.
 
-
-2. Job Listings:
-Display a list of jobs on the homepage.
-Each job listing should have the following attributes: Title, Category, Location, Date Posted, and Description.
-Implement pagination to show only a limited number of jobs per page (e.g., 10 jobs per page).
-Allow sorting of jobs by Title, Date Posted, and Location.
-Add filters for job listings, allowing users to filter by Category, Location, and Date Posted (e.g., filter by the past week, past month).
-
-
-3. Job Applications:
-Users should be able to apply for jobs (must be logged in).
-Each application should include the following details: User Info, Job Title, Date Applied, and Status (Pending, Reviewed, Accepted).
-Implement pagination for job applications in the admin view (e.g., show 10 applications per page).
-Allow sorting of applications by Date Applied, Status, and User.
-Implement filters for applications (e.g., filter by Status or Date Range).
-
-4. Admin Operations:
-Create: Admins can create applications manually (if needed).
-Read: Admins can view all applications (with pagination, sorting, and filtering).
-Update: Admins can update the status of an application (e.g., change it from Pending to Reviewed or Accepted).
-Delete: Admins can delete any application.
-
-
-4. Dashboard with Graphs:
-The dashboard should display graphs to visualize job-related statistics. 
-Job Applications Over Time 
-Job Listings by Category 
-Job Applications by Location 
-Implement pagination, sorting, and filtering on the job listings and job applications pages.
-
-
-
-5. Backend:
-Set up the database to store job listings, job applications, and user information. You can use PostgreSQL or MongoDB.
-Implement the necessary API endpoints to support functionalities
-
-
-6. Frontend:
-Create a clean, responsive frontend using React.js or Next.js.
-Design the UI to be simple but intuitive, with easy-to-use filters, sorting options, and pagination.
-
-
-7. Deployment:
-Deploy the application on a platform like Heroku, Netlify, or Vercel. 
-
-Bonus Points:
-Implement a search feature to search job listings by title or description.
-Integrate email notifications for users when their application status changes (e.g., accepted or rejected).
-Use Docker to containerize the application.
+## Developed by JanvierNahimana
