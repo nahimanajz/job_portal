@@ -5,7 +5,7 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 
-const API_URL = process.env.BACKEND_URL || `${process.env.FRONTEND_URL}/be`;
+const API_URL = process.env.BACKEND_URL;
 
 const config = new DocumentBuilder()
   .addBearerAuth({ type: 'http', scheme: 'bearer' })

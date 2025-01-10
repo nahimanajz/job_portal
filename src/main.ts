@@ -11,6 +11,7 @@ async function bootstrap() {
   const allowedOrigins = [
     process.env.FRONTEND_URL,
     'http://localhost:3000',
+    'https://harambe-1.netlify.app'
   ];
 
   app.enableCors({ origin: allowedOrigins }); 
